@@ -9,6 +9,7 @@ app.use(express.json());
 app.use('/api', router);
 
 
+
 const httpRequest = (options: any, postData: any) => {
     return new Promise((resolve, reject) => {
         const req = http.request(options, (res) => {
@@ -72,7 +73,7 @@ describe('тестирование бекенд сервера', () => {
         const response = await httpRequest(options, null);
         expect(JSON.parse(response as string)['id']).toEqual(2)
     })
-    it('при создании заказа id заказа должно быть на 1 больше, чем id предыдущего заказа', async () => {
+    it('при создании заказа id последнего элемента списка заказов должно быть равно id создаанного заказа', async () => {
         const postData = JSON.stringify({
             form: {
                 "name": "Alyona",
@@ -87,7 +88,7 @@ describe('тестирование бекенд сервера', () => {
         const options = {
             hostname: 'localhost',
             port: 3000,
-            path: '/hw/store/api/checkout', //можно передать сюда bug_id=2
+            path: '/hw/store/api/checkout?bug_id=2', //можно передать сюда bug_id=2
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,10 +96,22 @@ describe('тестирование бекенд сервера', () => {
             },
         }
 
-        const response1 = await httpRequest(options, postData) as string
-        const response2 = await httpRequest(options, postData) as string
+        const options2 = {
+            hostname: 'localhost',
+            port: 3000,
+            path: '/hw/store/api/orders',
+            method: 'GET',
+        }
 
-        expect(JSON.parse(response2).id - JSON.parse(response1).id).toEqual(1)
+        const response1 = await httpRequest(options, postData) as string
+        // console.log(response1)
+        // const response2 = await httpRequest(options, postData) as string
+
+        const response3 = await httpRequest(options2, null) as string
+        const orders = JSON.parse(response3)
+
+        expect(orders.length !== 0).toBeTruthy()
+        expect(JSON.parse(response1).id === orders.at(-1).id ).toBeTruthy()
     })
 });
                                 
