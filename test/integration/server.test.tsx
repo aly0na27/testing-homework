@@ -88,7 +88,7 @@ describe('тестирование бекенд сервера', () => {
         const options = {
             hostname: 'localhost',
             port: 3000,
-            path: '/hw/store/api/checkout?bug_id=2', //можно передать сюда bug_id=2
+            path: '/hw/store/api/checkout', //можно передать сюда bug_id=2
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
